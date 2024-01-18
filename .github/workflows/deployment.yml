@@ -23,6 +23,7 @@ jobs:
           step: start
           env: ${{ inputs.environment}}
           payload: '{"foo": "bar"}'
+          logs: ${{ format('https://github.com/{0}/actions/runs/{1}/job/{2}', github.repository, github.run_id, github.job) }}
 
       - name: Do Work
         run: sleep 30
@@ -34,4 +35,6 @@ jobs:
           step: finish
           status: ${{ job.status }}
           env: ${{ steps.deployment.outputs.env }}
+          env_url: https://github.com
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          logs: ${{ format('https://github.com/{0}/actions/runs/{1}/job/{2}', github.repository, github.run_id, github.job) }}
