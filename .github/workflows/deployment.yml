@@ -1,0 +1,37 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        type: environment
+        required: true
+        default: dev
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      deployments: write
+    steps:
+      - name: Start Deployment
+        id: deployment
+        uses: bobheadxi/deployments@v1.4.0
+        with:
+          step: start
+          env: ${{ inputs.environment}}
+          payload: '{"foo": "bar"}'
+
+      - name: Do Work
+        run: sleep 30
+
+      - name: Update Deployment Status
+        uses: bobheadxi/deployments@v1.4.0
+        if: always()
+        with:
+          step: finish
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
